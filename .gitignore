@@ -1,3 +1,23 @@
+### VHDL ###
+
+# Quartus compilation files
+
+*.bak
+quartus/
+work/
+output_files/
+*.mti
+*.mpf
+*.wlf
+
+# Modelsim compilation files
+
+incremental_db/
+db/
+*.qpf
+*.qsf
+*.qws
+
 ### OSX ###
 .DS_Store
 .AppleDouble
@@ -47,13 +67,3 @@ $RECYCLE.BIN/
 *.exe
 *.out
 *.app
-
-# Quartus compilation files
-
-quartus/
-work/
-output_files/
-*.mti
-*.mpf
-*.wlf
-*.bak

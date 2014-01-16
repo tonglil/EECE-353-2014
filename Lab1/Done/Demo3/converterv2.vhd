@@ -1,5 +1,5 @@
--- Your Names:  Amitoj Kooner
--- Your Student Numbers: 33263112
+-- Your Names:  Amitoj Kooner, Tongli Li
+-- Your Student Numbers: 33263112, 15688112
 -- Your Lab Section:  L2C
 
 library ieee;
@@ -17,10 +17,10 @@ end converterv2 ;
 
 
 architecture behavioural of converterv2 is
+
 signal cnt : integer range 0 to 7 := 0;
 
 begin
-
 	process(KEY)
 	begin
 		if (rising_edge(KEY(0))) then
@@ -44,8 +44,5 @@ begin
 			when 6 => HEX0 <= "0010000";
 			when others => HEX0 <= "0001001";
 		end case;
-
 	end process;
-	
 end behavioural;
-

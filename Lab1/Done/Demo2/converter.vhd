@@ -1,7 +1,6 @@
--- Your Names:  Amitoj Kooner
--- Your Student Numbers: 33263112
+-- Your Names:  Amitoj Kooner, Tongli Li
+-- Your Student Numbers: 33263112, 15688112
 -- Your Lab Section:  L2C
-
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -18,13 +17,10 @@ entity converter is
 end converter ;
 
 architecture behavioural of converter is
-
 begin
-
 	process(SW)
 	variable x : std_logic_vector(6 downto 0);
 	begin
-
 		x := (others => SW(3));
 		case SW(2 downto 0) is
 			when "000" => HEX0 <= x XOR "0001000";
@@ -36,8 +32,6 @@ begin
 			when "110" => HEX0 <= x XOR "0010000";
 			when others => HEX0 <= x XOR "0001001";
 		end case;
-
 	end process;
-	
 end behavioural;
 
