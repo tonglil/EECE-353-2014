@@ -20,12 +20,12 @@ end lab2 ;
 architecture behavioural of lab2 is
 	TYPE state_types is (r0, r1, r2, r3, r4, r5, c1, c2, c3, c4, c5, m0, m1, m2);
 	SIGNAL STATE : state_types := r0;
-	SIGNAL cnt : std_logic_vector (25 downto 0) := (others => '0');
+	SIGNAL cnt : std_logic_vector (24 downto 0) := (others => '0');
 	SIGNAL line_cnt : std_logic_vector (5 downto 0) := (others => '0');
 begin
 	lcd_blon <= '1';
 	lcd_on <= '1';
-	lcd_en <= cnt(25);
+	lcd_en <= cnt(24);
 	lcd_rw <= '0';
 	
 	ledg <= line_cnt;
@@ -38,11 +38,12 @@ begin
 	END PROCESS;
 	
 	PROCESS(KEY, cnt, line_cnt)
+	variable SAVED_STATE : state_types;
 	BEGIN
 		IF (key(0) = '0') THEN
 			STATE <= r0;
 			line_cnt <= (others => '0');
-		ELSIF (rising_edge(cnt(25))) THEN
+		ELSIF (rising_edge(cnt(24))) THEN
 			CASE STATE IS
 				WHEN r0 => STATE <= r1;
 				WHEN r1 => STATE <= r2;
@@ -51,48 +52,59 @@ begin
 				WHEN r4 => STATE <= r5;
 				WHEN r5 => 
 					STATE <= c1;
+					SAVED_STATE := c1;
 					line_cnt <= line_cnt + '1';
 				WHEN c1 => 
 					IF SW(0) = '0' THEN
 						STATE <= c2;
+						SAVED_STATE := c2;
 					ELSE
 						STATE <= c5;
+						SAVED_STATE := c5;
 					END IF;
 					line_cnt <= line_cnt + '1';
 				WHEN c2 => 
 					IF SW(0) = '0' THEN
 						STATE <= c3;
+						SAVED_STATE := c3;
 					ELSE
 						STATE <= c1;
+						SAVED_STATE := c1;
 					END IF;
 					line_cnt <= line_cnt + '1';
 				WHEN c3 => 
 					IF SW(0) = '0' THEN
 						STATE <= c4;
+						SAVED_STATE := c4;
 					ELSE
 						STATE <= c2;
+						SAVED_STATE := c2;
 					END IF;
 					line_cnt <= line_cnt + '1';
 				WHEN c4 => 
 					IF SW(0) = '0' THEN
 						STATE <= c5;
+						SAVED_STATE := c5;
 					ELSE
 						STATE <= c3;
+						SAVED_STATE := c3;
 					END IF;
 					line_cnt <= line_cnt + '1';
 				WHEN c5 => 
 					IF SW(0) = '0' THEN
 						STATE <= c1;
+						SAVED_STATE := c1;
 					ELSE
 						STATE <= c4;
+						SAVED_STATE := c4;
 					END IF;
 					line_cnt <= line_cnt + '1';
 				WHEN m0 =>
-					STATE <= c1;
+					STATE <= SAVED_STATE;
 				WHEN m1 =>
 					STATE <= m2;
 				WHEN m2 =>
-					STATE <= c1;
+					STATE <= SAVED_STATE;
 					line_cnt <= (others => '0');
 			END CASE;
 			
