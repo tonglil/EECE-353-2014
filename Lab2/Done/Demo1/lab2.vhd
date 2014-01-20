@@ -21,14 +21,11 @@ architecture behavioural of lab2 is
 	TYPE state_types is (r0, r1, r2, r3, r4, r5, c1, c2, c3, c4, c5, m0, m1, m2);
 	SIGNAL STATE : state_types := r0;
 	SIGNAL cnt : std_logic_vector (24 downto 0) := (others => '0');
-	SIGNAL line_cnt : std_logic_vector (5 downto 0) := (others => '0');
 begin
 	lcd_blon <= '1';
 	lcd_on <= '1';
 	lcd_en <= cnt(24);
 	lcd_rw <= '0';
-	
-	ledg <= line_cnt;
 
 	PROCESS(CLOCK_50)
 	BEGIN
@@ -37,82 +34,85 @@ begin
 		END IF;
 	END PROCESS;
 	
-	PROCESS(KEY, cnt, line_cnt)
-	variable SAVED_STATE : state_types;
+	PROCESS(KEY, cnt)
+	variable NEXT_STATE : state_types;
+	variable line_cnt : std_logic_vector (5 downto 0) := (others => '0');
 	BEGIN
 		IF (key(0) = '0') THEN
 			STATE <= r0;
-			line_cnt <= (others => '0');
+			line_cnt := (others => '0');
 		ELSIF (rising_edge(cnt(24))) THEN
 			CASE STATE IS
-				WHEN r0 => STATE <= r1;
-				WHEN r1 => STATE <= r2;
-				WHEN r2 => STATE <= r3;
-				WHEN r3 => STATE <= r4;
-				WHEN r4 => STATE <= r5;
+				WHEN r0 => NEXT_STATE := r1;
+				WHEN r1 => NEXT_STATE := r2;
+				WHEN r2 => NEXT_STATE := r3;
+				WHEN r3 => NEXT_STATE := r4;
+				WHEN r4 => NEXT_STATE := r5;
 				WHEN r5 => 
-					STATE <= c1;
-					SAVED_STATE := c1;
-					line_cnt <= line_cnt + '1';
+					NEXT_STATE := c1;
+
 				WHEN c1 => 
 					IF SW(0) = '0' THEN
-						STATE <= c2;
-						SAVED_STATE := c2;
+						NEXT_STATE := c2;
 					ELSE
-						STATE <= c5;
-						SAVED_STATE := c5;
+						NEXT_STATE := c5;
 					END IF;
-					line_cnt <= line_cnt + '1';
+					line_cnt := line_cnt + '1';
+					
 				WHEN c2 => 
 					IF SW(0) = '0' THEN
-						STATE <= c3;
-						SAVED_STATE := c3;
+						NEXT_STATE := c3;
 					ELSE
-						STATE <= c1;
-						SAVED_STATE := c1;
+						NEXT_STATE := c1;
 					END IF;
-					line_cnt <= line_cnt + '1';
+					line_cnt := line_cnt + '1';
+					
 				WHEN c3 => 
 					IF SW(0) = '0' THEN
-						STATE <= c4;
-						SAVED_STATE := c4;
+						NEXT_STATE := c4;
 					ELSE
-						STATE <= c2;
-						SAVED_STATE := c2;
+						NEXT_STATE := c2;
 					END IF;
-					line_cnt <= line_cnt + '1';
+					line_cnt := line_cnt + '1';
+					
 				WHEN c4 => 
 					IF SW(0) = '0' THEN
-						STATE <= c5;
-						SAVED_STATE := c5;
+						NEXT_STATE := c5;
 					ELSE
-						STATE <= c3;
-						SAVED_STATE := c3;
+						NEXT_STATE := c3;
 					END IF;
-					line_cnt <= line_cnt + '1';
+					line_cnt := line_cnt + '1';
+					
 				WHEN c5 => 
 					IF SW(0) = '0' THEN
-						STATE <= c1;
-						SAVED_STATE := c1;
+						NEXT_STATE := c1;
 					ELSE
-						STATE <= c4;
-						SAVED_STATE := c4;
+						NEXT_STATE := c4;
 					END IF;
-					line_cnt <= line_cnt + '1';
+					line_cnt := line_cnt + '1';
+					
 				WHEN m0 =>
-					STATE <= SAVED_STATE;
+					line_cnt := line_cnt + '1';
 				WHEN m1 =>
-					STATE <= m2;
-				WHEN m2 =>
-					STATE <= SAVED_STATE;
-					line_cnt <= (others => '0');
+					line_cnt := line_cnt + '1';
+				WHEN m2 => 
+					line_cnt := (others => '0');
+					
+				WHEN others => null;
 			END CASE;
 			
 			IF line_cnt = "10000" THEN
 				STATE <= m0;
-			ELSIF line_cnt = "100000" THEN
+			ELSIF line_cnt = "100001" THEN
 				STATE <= m1;
+			ELSIF line_cnt = "100010" THEN
+				STATE <= m2;
+			ELSE
+				STATE <= NEXT_STATE;
 			END IF;
+			
+			ledg <= line_cnt;
+
 		END IF;
 	END PROCESS;
 	
@@ -158,9 +158,10 @@ begin
 			WHEN m1 =>
 				lcd_rs <= '0';
 				lcd_data <= "10000000"; --move cursor to first row
-			WHEN m2 =>
+			WHEN m2 => -- m2
 				lcd_rs <= '0';
 				lcd_data <= "00000001"; --clear screen
+			WHEN others => null;
 		END CASE;
 	END PROCESS;
  
