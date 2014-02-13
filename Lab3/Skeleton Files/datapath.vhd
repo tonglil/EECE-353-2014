@@ -115,18 +115,18 @@ BEGIN
 	pcard3_out <= pcard3_sig;
 	
 	pcard1seg : card7seg PORT MAP(
-		card : pcard1_sig;
-		seg7 : HEX0
+		card => pcard1_sig,
+		seg7 => HEX0
 	);
 	
 	pcard2seg : card7seg PORT MAP(
-		card : pcard2_sig;
-		seg7 : HEX1
+		card => pcard2_sig,
+		seg7 => HEX1
 	);
 	
 	pcard3seg : card7seg PORT MAP(
-		card : pcard3_sig;
-		seg7 : HEX2
+		card => pcard3_sig,
+		seg7 => HEX2
 	);
 	
 	pscorehand : scorehand PORT MAP(
@@ -169,18 +169,18 @@ BEGIN
 	);
 
 	dcard1seg : card7seg PORT MAP(
-		card : dcard1_sig;
-		seg7 : HEX4
+		card => dcard1_sig,
+		seg7 => HEX4
 	);
 	
 	dcard2seg : card7seg PORT MAP(
-		card : dcard2_sig;
-		seg7 : HEX5
+		card => dcard2_sig,
+		seg7 => HEX5
 	);
 	
 	dcard3seg : card7seg PORT MAP(
-		card : dcard3_sig;
-		seg7 : HEX6
+		card => dcard3_sig,
+		seg7 => HEX6
 	);
 	
 	dscorehand : scorehand PORT MAP(
