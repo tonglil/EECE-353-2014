@@ -24,7 +24,7 @@ BEGIN
 		if resetb = '0' then
 			-- use 'range in signal assigment 
 			Q_tmp <= (Q_tmp'range => '0');
-		elsif (slow_clock='1' and slow_clock'event) then
+		elsif (rising_edge(slow_clock)) then
 			if load = '1' then
 				Q_tmp <= I;
 			end if;

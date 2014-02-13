@@ -19,7 +19,7 @@ ENTITY statemachine IS
 		load_dcard1, load_dcard2, load_dcard3 : OUT STD_LOGIC;
 		
   		LEDG : OUT STD_LOGIC_VECTOR(1 downto 0);	
-		LEDR : OUT STD_LOGIC_VECTOR(7 downto 0);
+		LEDR : OUT STD_LOGIC_VECTOR(7 downto 0)
 	);
 END statemachine;
 
@@ -29,13 +29,12 @@ ARCHITECTURE behavioural OF statemachine IS
 	SIGNAL STATE : state_types := s;
 BEGIN
 
-	LEDR <= STATE;
 	PROCESS (slow_clock, resetb)
 	VARIABLE NEXT_STATE : state_types;
 	BEGIN
 		IF(resetb = '0') THEN
 			STATE <= s;
-		ELSIF (rising_edge(slow_clock)) THEN
+		ELSIF (falling_edge(slow_clock)) THEN
 			CASE STATE IS
 				WHEN s => NEXT_STATE := lp1;
 				WHEN lp1 => NEXT_STATE := ld1;
@@ -64,9 +63,9 @@ BEGIN
 						NEXT_STATE := ld3;
 					ELSIF (unsigned(dscore) = 4 AND (unsigned(pcard3) >= 2 AND unsigned(pcard3) <= 7)) THEN
 						NEXT_STATE := ld3;
-					ELSIF (unsigned(dscore) = 3 AND unsigned(pcard3) /= 8) THEN --SHOULD CHECK IF THE PLAYER's THIRD CARD IS NOT 8
+					ELSIF (unsigned(dscore) = 3 AND unsigned(pcard3) /= 8) THEN
 						NEXT_STATE := ld3;
-					ELSIF (unsigned(dscore) >= 0 AND unsigned(pscore) <= 2) THEN
+					ELSIF (unsigned(dscore) >= 0 AND unsigned(dscore) <= 2) THEN
 						NEXT_STATE := ld3;
 					ELSE
 						NEXT_STATE := go;
@@ -98,6 +97,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00000000";
 			WHEN lp1 =>
 				LEDG <= "00";
 				load_pcard1 <= '1';
@@ -106,6 +106,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00000001";
 			WHEN lp2 =>
 				LEDG <= "00";
 				load_pcard1 <= '0';
@@ -114,6 +115,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00000010";
 			WHEN lp3 =>
 				LEDG <= "00";
 				load_pcard1 <= '0';
@@ -122,6 +124,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00000011";
 			WHEN ld1 =>
 				LEDG <= "00";
 				load_pcard1 <= '0';
@@ -130,6 +133,7 @@ BEGIN
 				load_dcard1 <= '1';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00000100";
 			WHEN ld2 =>
 				LEDG <= "00";
 				load_pcard1 <= '0';
@@ -138,6 +142,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '1';
 				load_dcard3 <= '0';
+				LEDR <= "00000101";
 			WHEN ld3 =>
 				LEDG <= "00";
 				load_pcard1 <= '0';
@@ -146,6 +151,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '1';
+				LEDR <= "00000110";
 			WHEN go =>
 				LEDG <= "00";
 				load_pcard1 <= '0';
@@ -154,6 +160,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00000111";
 			WHEN pwin =>
 				LEDG <= "01";
 				load_pcard1 <= '0';
@@ -162,6 +169,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00001000";
 			WHEN dwin =>
 				LEDG <= "10";
 				load_pcard1 <= '0';
@@ -170,6 +178,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00001001";
 			WHEN tie =>
 				LEDG <= "11";
 				load_pcard1 <= '0';
@@ -178,6 +187,7 @@ BEGIN
 				load_dcard1 <= '0';
 				load_dcard2 <= '0';
 				load_dcard3 <= '0';
+				LEDR <= "00001010";
 			WHEN others => null;
 		END CASE;
 	END PROCESS;
