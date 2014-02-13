@@ -17,6 +17,7 @@ ENTITY lab3 IS
 		KEY : IN STD_LOGIC_VECTOR(3 downto 0);  -- includes slow_clock and reset
 
 		LEDG : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);  -- ledg
+		LEDR : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);  -- ledr
 		HEX7 : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);  -- digit 7
 		HEX6 : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);  -- digit 6
 		HEX5 : OUT STD_LOGIC_VECTOR(6 DOWNTO 0);  -- digit 5
@@ -59,7 +60,8 @@ ARCHITECTURE structural OF lab3 IS
 		     pcard3 : IN STD_LOGIC_VECTOR(3 downto 0);
    		  load_pcard1, load_pcard2, load_pcard3 : OUT STD_LOGIC;
 		     load_dcard1, load_dcard2, load_dcard3 : OUT STD_LOGIC;		
-    		  LEDG : OUT STD_LOGIC_VECTOR(1 downto 0)	
+    		  LEDG : OUT STD_LOGIC_VECTOR(1 downto 0);
+    		  LEDR : OUT STD_LOGIC_VECTOR(7 downto 0)
       	);		
 		end component;
 
@@ -108,6 +110,8 @@ BEGIN
 		load_dcard1 => load_dcard1,
 		load_dcard2 => load_dcard2,
 		load_dcard3 => load_dcard3,
-      LEDG => LEDG);		
+      LEDG => LEDG,
+      LEDR => LEDR
+		);		
 	
 END;
