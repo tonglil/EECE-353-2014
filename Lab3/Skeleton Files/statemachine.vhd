@@ -18,7 +18,8 @@ ENTITY statemachine IS
 		load_pcard1, load_pcard2, load_pcard3 : OUT STD_LOGIC;
 		load_dcard1, load_dcard2, load_dcard3 : OUT STD_LOGIC;
 		
-  		LEDG : OUT STD_LOGIC_VECTOR(1 downto 0)	
+  		LEDG : OUT STD_LOGIC_VECTOR(1 downto 0);	
+		LEDR : OUT STD_LOGIC_VECTOR(7 downto 0);
 	);
 END statemachine;
 
@@ -28,6 +29,7 @@ ARCHITECTURE behavioural OF statemachine IS
 	SIGNAL STATE : state_types := s;
 BEGIN
 
+	LEDR <= STATE;
 	PROCESS (slow_clock, resetb)
 	VARIABLE NEXT_STATE : state_types;
 	BEGIN
