@@ -14,7 +14,7 @@ ARCHITECTURE behavioral OF scorehand IS
 
 BEGIN
 
-	PROCESS (card1, card2, card)
+	PROCESS (card1, card2, card3)
 	VARIABLE c : unsigned;
 	BEGIN
 		c := (unsigned(card1) + unsigned(card2) + unsigned(card3)) mod 10;
