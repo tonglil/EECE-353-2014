@@ -28,7 +28,6 @@ ENTITY datapath IS
 	);
 END datapath;
 
-
 ARCHITECTURE mixed OF datapath IS
 
 BEGIN
@@ -37,14 +36,18 @@ BEGIN
 		IF rising_edge(slow_clock) THEN
 			-- if enable (load_pcard1) is high -> dealcard => register
 			IF load_pcard1 = '1' THEN
+			END IF;
 		END IF;
     -- Your code goes here
 	 END PROCESS;
 	 
+	 
+	 
+	 
 END;
 
 
--- add reg4 here as a process
+-- add reg4 here
 
 -----
 
