@@ -16,19 +16,19 @@ end lab4;
 
 architecture rtl of lab4 is
 
- --Component from the Verilog file: vga_adapter.v
-
-  component vga_adapter
-    generic(RESOLUTION : string);
-    port (resetn                                       : in  std_logic;
-          clock                                        : in  std_logic;
-          colour                                       : in  std_logic_vector(2 downto 0);
-          x                                            : in  std_logic_vector(7 downto 0);
-          y                                            : in  std_logic_vector(6 downto 0);
-          plot                                         : in  std_logic;
-          VGA_R, VGA_G, VGA_B                          : out std_logic_vector(9 downto 0);
-          VGA_HS, VGA_VS, VGA_BLANK, VGA_SYNC, VGA_CLK : out std_logic);
-  end component;
+ -- Component from the Verilog file: vga_adapter.v
+	component vga_adapter
+		generic(RESOLUTION : string);
+		port (
+			 resetn                                       : in  std_logic;
+			 clock                                        : in  std_logic;
+			 colour                                       : in  std_logic_vector(2 downto 0);
+			 x                                            : in  std_logic_vector(7 downto 0);
+			 y                                            : in  std_logic_vector(6 downto 0);
+			 plot                                         : in  std_logic;
+			 VGA_R, VGA_G, VGA_B                          : out std_logic_vector(9 downto 0);
+			 VGA_HS, VGA_VS, VGA_BLANK, VGA_SYNC, VGA_CLK : out std_logic);
+	  end component;
   
 	component statemachine is
 		PORT (				
@@ -61,8 +61,6 @@ architecture rtl of lab4 is
 
   
 begin
-
-  -- includes the vga adapter, which should be in your project 
 
   vga_u0 : vga_adapter
     generic map(RESOLUTION => "160x120") 
@@ -103,8 +101,5 @@ begin
 		loady		=> loady,
 		plot		=> plot
 	);
-	
 
-end RTL;
-
-
+end rtl;
