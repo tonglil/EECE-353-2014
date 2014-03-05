@@ -15,7 +15,8 @@ ENTITY statemachine IS
 		initx, inity, loady, plot, initl, drawl : OUT STD_LOGIC;
 		colour : OUT STD_LOGIC_VECTOR(2 downto 0);
 		x : OUT STD_LOGIC_VECTOR(7 downto 0);
-		y : OUT STD_LOGIC_VECTOR(6 downto 0)
+		y : OUT STD_LOGIC_VECTOR(6 downto 0);
+		ledg : OUT STD_LOGIC_VECTOR(7 downto 0)
 	);
 END statemachine;
 
@@ -32,11 +33,14 @@ BEGIN
 		ELSIF rising_edge(clk) THEN
 			CASE state IS
 				WHEN sr => 
-					colour <= "000";
+					colour <= "111";
+					ledg <= "00000000";
 					next_state := sbx;
 				WHEN sby => 
+					ledg <= "00000001";
 					next_state := sbx;
-				WHEN sbx => 
+				WHEN sbx =>
+					ledg <= "00000010";
 					IF (XDONE = '0') THEN
 						next_state := sbx;
 					ELSIF (XDONE = '1' AND YDONE = '0') THEN
@@ -44,7 +48,8 @@ BEGIN
 					ELSE 
 						next_state := sbdone;
 					END IF;
-				WHEN sbdone => 
+				WHEN sbdone =>
+					ledg <= "00000100";
 					IF (draw = '0') THEN
 						x <= sw(17 downto 10);
 						y <= sw(9 downto 3);
@@ -57,10 +62,11 @@ BEGIN
 						next_state := sbdone;
 					END IF;
 				WHEN slinit => 
-					colour <= "111";
+					colour <= "000";
 					next_state := sldraw;
 				WHEN sldraw =>
 					IF (LDONE = '1') THEN
+						ledg <= "11111111";
 						next_state := sldone;
 					ELSE
 						next_state := sldraw;

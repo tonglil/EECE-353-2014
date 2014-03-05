@@ -25,17 +25,17 @@ BEGIN
 		VARIABLE x_tmp : unsigned(7 downto 0) := "00000000";
 		VARIABLE y_tmp : unsigned(6 downto 0) := "0000000";
 		
-		VARIABLE dx : unsigned(7 downto 0);
-		VARIABLE dy : unsigned(6 downto 0);
+		VARIABLE dx : signed(7 downto 0);
+		VARIABLE dy : signed(6 downto 0);
 		
-		VARIABLE err : unsigned(7 downto 0);
-		VARIABLE e2 : unsigned(7 downto 0);
+		VARIABLE err : signed(7 downto 0);
+		VARIABLE e2 : signed(7 downto 0);
 		
-		VARIABLE x0 : unsigned(7 downto 0);	-- 80
-		VARIABLE y0 : unsigned(6 downto 0);	-- 60
+		VARIABLE x0 : signed(7 downto 0);	-- 80
+		VARIABLE y0 : signed(6 downto 0);	-- 60
 		
-		VARIABLE x1 : unsigned(7 downto 0);
-		VARIABLE y1 : unsigned(6 downto 0);
+		VARIABLE x1 : signed(7 downto 0);
+		VARIABLE y1 : signed(6 downto 0);
 		
 		VARIABLE sx : signed(1 downto 0);
 		VARIABLE sy : signed(1 downto 0);
@@ -47,19 +47,19 @@ BEGIN
 			IF (initl = '1') THEN
 				x0 := "01010000";	-- 80
 				y0 := "0111100";	-- 60
-				x1 := unsigned(xin);
-				y1 := unsigned(yin);
-				dx := unsigned(abs(signed(x0) - signed(x1)));
-				dy := unsigned(abs(signed(y0) - signed(y1)));
+				x1 := signed(xin);
+				y1 := signed(yin);
+				dx := abs(x0 - x1);
+				dy := abs(y0 - y1);
 				IF (x0 < x1) THEN
-					sx := "01";
+					sx := to_signed(1, 2);
 				ELSE
-					sx := "11";
+					sx := to_signed(-1, 2);
 				END IF;
 				IF (y0 < y1) THEN
-					sy := "01";
+					sy := to_signed(1, 2);
 				ELSE
-					sy := "11";
+					sy := to_signed(-1, 2);
 				END IF;
 				err := dx - dy;
 				ldone <= '0';
@@ -70,13 +70,13 @@ BEGIN
 					ldone <= '1';
 				ELSE
 					e2 := err + err;
-					IF (signed(e2) > -signed(dy)) THEN
+					IF (e2 > -dy) THEN
 						err := err - dy;
-						x0 := unsigned(signed(x0) + sx);
+						x0 := x0 + sx;
 					END IF;
 					IF (e2 < dx) THEN
 						err := err + dx;
-						y0 := unsigned(signed(y0) + sy);
+						y0 := y0 + sy;
 					END IF;
 				END IF;
 			ELSE

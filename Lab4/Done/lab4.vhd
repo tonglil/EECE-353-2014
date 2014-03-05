@@ -6,6 +6,7 @@ entity lab4 is
   port(CLOCK_50            : in  std_logic;
        KEY                 : in  std_logic_vector(3 downto 0);
        SW                  : in  std_logic_vector(17 downto 0);
+		 LEDG						: out std_logic_vector(7 downto 0);
        VGA_R, VGA_G, VGA_B : out std_logic_vector(9 downto 0);  -- The outs go to VGA controller
        VGA_HS              : out std_logic;
        VGA_VS              : out std_logic;
@@ -40,7 +41,8 @@ architecture rtl of lab4 is
 			initx, inity, loady, plot, initl, drawl : OUT STD_LOGIC;
 			colour : OUT STD_LOGIC_VECTOR(2 downto 0);
 			x : OUT STD_LOGIC_VECTOR(7 downto 0);
-			y : OUT STD_LOGIC_VECTOR(6 downto 0)
+			y : OUT STD_LOGIC_VECTOR(6 downto 0);
+			ledg : OUT STD_LOGIC_VECTOR(7 downto 0)
 		);
 	end component;	
 	
@@ -69,8 +71,16 @@ architecture rtl of lab4 is
   signal xmid      : std_logic_vector(7 downto 0);
   signal ymid      : std_logic_vector(6 downto 0);
 
+  signal slow	: std_logic_vector(23 downto 0) := (others=>'0');
   
 begin
+
+	PROCESS(CLOCK_50)
+	BEGIN
+		IF (rising_edge(CLOCK_50)) THEN
+			slow <= std_logic_vector(unsigned(slow) + 1);
+		END IF;
+	END PROCESS;
 
   vga_u0 : vga_adapter
     generic map(RESOLUTION => "160x120") 
@@ -87,10 +97,11 @@ begin
              VGA_VS    => VGA_VS,
              VGA_BLANK => VGA_BLANK,
              VGA_SYNC  => VGA_SYNC,
-             VGA_CLK   => VGA_CLK);
+             VGA_CLK   => VGA_CLK
+		);
 
 	dp : datapath PORT MAP(
-		clk		=> CLOCK_50,
+		clk		=> slow(16),
 		resetb	=> KEY(3),
 		initx		=> initx,
 		inity		=> inity,
@@ -107,7 +118,7 @@ begin
 	);	
 	
 	sm : statemachine PORT MAP(
-		clk		=> CLOCK_50,
+		clk		=> slow(16),
 		resetb	=> KEY(3),
 		xdone		=> xdone,
 		ydone		=> ydone,
@@ -120,9 +131,10 @@ begin
 		plot		=> plot,
 		initl		=> initl,
 		drawl		=> drawl,
-		colour		=> colour,
+		colour	=> colour,
 		x			=> xmid,
-		y			=> ymid
+		y			=> ymid,
+		ledg		=> LEDG
 	);
 
 end rtl;
