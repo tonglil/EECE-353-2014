@@ -101,7 +101,7 @@ begin
 		);
 
 	sm : statemachine PORT MAP(
-		clk		=> slow(15),
+		clk		=> CLOCK_50,
 		resetb	=> KEY(3),
 		xdone		=> xdone,
 		ydone		=> ydone,
@@ -122,7 +122,7 @@ begin
 	);
 		
 	dp : datapath PORT MAP(
-		clk		=> slow(15),
+		clk		=> CLOCK_50,
 		resetb	=> KEY(3),
 		initx		=> initx,
 		inity		=> inity,
