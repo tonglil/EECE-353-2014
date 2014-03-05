@@ -12,7 +12,7 @@ ENTITY statemachine IS
 		xdone, ydone, ldone : IN STD_LOGIC;
 		sw : IN STD_LOGIC_VECTOR(17 downto 0);
 		draw : IN STD_LOGIC;
-		initx, inity, loady, plot, initl, drawl : OUT STD_LOGIC;
+		initx, inity, loady, loadx, plot, initl, drawl : OUT STD_LOGIC;
 		colour : OUT STD_LOGIC_VECTOR(2 downto 0);
 		x : OUT STD_LOGIC_VECTOR(7 downto 0);
 		y : OUT STD_LOGIC_VECTOR(6 downto 0);
@@ -87,6 +87,7 @@ BEGIN
 				INITX <= '1';
 				INITY <= '1';
 				LOADY <= '1';
+				LOADX <= '1';
 				INITL <= '0';
 				DRAWL <= '0';
 				PLOT <= '0';
@@ -94,6 +95,7 @@ BEGIN
 				INITX <= '1';
 				INITY <= '0';
 				LOADY <= '1';
+				LOADX <= '1';
 				INITL <= '0';
 				DRAWL <= '0';
 				PLOT <= '0';
@@ -101,6 +103,7 @@ BEGIN
 				INITX <= '0';
 				INITY <= '0';
 				LOADY <= '0';
+				LOADX <= '1';
 				INITL <= '0';
 				DRAWL <= '0';
 				PLOT <= '1';
@@ -108,6 +111,7 @@ BEGIN
 				INITX <= '0';
 				INITY <= '0';
 				LOADY <= '0';
+				LOADX <= '0';
 				INITL <= '1';
 				DRAWL <= '0';
 				PLOT <= '0';
@@ -115,6 +119,7 @@ BEGIN
 				INITX <= '0';
 				INITY <= '0';
 				LOADY <= '0';
+				LOADX <= '0';
 				INITL <= '0';
 				DRAWL <= '1';
 				PLOT <= '1';
@@ -122,6 +127,7 @@ BEGIN
 				INITX <= '0';
 				INITY <= '0';
 				LOADY <= '0';
+				LOADX <= '0';
 				INITL <= '0';
 				DRAWL <= '0';
 				PLOT <= '0';

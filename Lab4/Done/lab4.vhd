@@ -38,7 +38,7 @@ architecture rtl of lab4 is
 			xdone, ydone, ldone : IN STD_LOGIC;
 			sw : IN STD_LOGIC_VECTOR(17 downto 0);
 			draw : IN STD_LOGIC;
-			initx, inity, loady, plot, initl, drawl : OUT STD_LOGIC;
+			initx, inity, loady, loadx, plot, initl, drawl : OUT STD_LOGIC;
 			colour : OUT STD_LOGIC_VECTOR(2 downto 0);
 			x : OUT STD_LOGIC_VECTOR(7 downto 0);
 			y : OUT STD_LOGIC_VECTOR(6 downto 0);
@@ -50,7 +50,7 @@ architecture rtl of lab4 is
 		PORT (
 			clk : IN STD_LOGIC;
 			resetb : IN STD_LOGIC;
-			initx, inity, loady, initl, drawl : IN STD_LOGIC;
+			initx, inity, loady, loadx, initl, drawl : IN STD_LOGIC;
 			x : OUT STD_LOGIC_VECTOR(7 downto 0);
 			y : OUT STD_LOGIC_VECTOR(6 downto 0);
 			xin : IN STD_LOGIC_VECTOR(7 downto 0); -- x1
@@ -66,7 +66,7 @@ architecture rtl of lab4 is
   
   signal inity, initx, initl : std_logic;
   signal xdone, ydone, ldone : std_logic;
-  signal loady, drawl : std_logic;
+  signal loady, loadx, drawl : std_logic;
 
   signal xmid      : std_logic_vector(7 downto 0);
   signal ymid      : std_logic_vector(6 downto 0);
@@ -111,6 +111,7 @@ begin
 		initx		=> initx,
 		inity		=> inity,
 		loady		=> loady,
+		loadx		=> loadx,
 		plot		=> plot,
 		initl		=> initl,
 		drawl		=> drawl,
@@ -134,6 +135,7 @@ begin
 		xdone		=> xdone,
 		ydone		=> ydone,
 		ldone		=> ldone,
-		loady		=> loady
+		loady		=> loady,
+		loadx		=> loadx
 	);
 end rtl;
