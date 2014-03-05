@@ -34,30 +34,40 @@ architecture rtl of lab4 is
 		PORT (				
 			clk : IN STD_LOGIC;
 			resetb : IN STD_LOGIC;
-			xdone, ydone : IN STD_LOGIC;
-			initx, inity, loady, plot : OUT STD_LOGIC
+			xdone, ydone, ldone : IN STD_LOGIC;
+			sw : IN STD_LOGIC_VECTOR(17 downto 0);
+			draw : IN STD_LOGIC;
+			initx, inity, loady, plot, initl, drawl : OUT STD_LOGIC;
+			colour : OUT STD_LOGIC_VECTOR(2 downto 0);
+			x : OUT STD_LOGIC_VECTOR(7 downto 0);
+			y : OUT STD_LOGIC_VECTOR(6 downto 0)
 		);
-	end component;
+	end component;	
 	
 	component datapath is
 		PORT (
 			clk : IN STD_LOGIC;
 			resetb : IN STD_LOGIC;
-			initx, inity, loady : IN STD_LOGIC;
+			initx, inity, loady, initl, drawl : IN STD_LOGIC;
 			x : OUT STD_LOGIC_VECTOR(7 downto 0);
 			y : OUT STD_LOGIC_VECTOR(6 downto 0);
-			xdone, ydone : OUT STD_LOGIC
+			xin : IN STD_LOGIC_VECTOR(7 downto 0); -- x1
+			yin : IN STD_LOGIC_VECTOR(6 downto 0); -- y1
+			xdone, ydone, ldone : OUT STD_LOGIC
 		);
 	end component;
 
   signal x      : std_logic_vector(7 downto 0) := "00000000";
   signal y      : std_logic_vector(6 downto 0) := "0000000";
-  signal colour : std_logic_vector(2 downto 0) := "111";
+  signal colour : std_logic_vector(2 downto 0);
   signal plot   : std_logic;
   
-  signal inity, initx : std_logic;
-  signal xdone, ydone : std_logic;
-  signal loady : std_logic;
+  signal inity, initx, initl : std_logic;
+  signal xdone, ydone, ldone : std_logic;
+  signal loady, drawl : std_logic;
+
+  signal xmid      : std_logic_vector(7 downto 0);
+  signal ymid      : std_logic_vector(6 downto 0);
 
   
 begin
@@ -80,26 +90,39 @@ begin
              VGA_CLK   => VGA_CLK);
 
 	dp : datapath PORT MAP(
-		resetb	=> KEY(3),
 		clk		=> CLOCK_50,
+		resetb	=> KEY(3),
 		initx		=> initx,
 		inity		=> inity,
+		initl		=> initl,
+		drawl		=> drawl,
 		x			=> x,
 		y			=> y,
+		xin		=> xmid,
+		yin		=> ymid,
 		xdone		=> xdone,
 		ydone		=> ydone,
+		ldone		=> ldone,
 		loady		=> loady
-	);
+	);	
 	
 	sm : statemachine PORT MAP(
 		clk		=> CLOCK_50,
 		resetb	=> KEY(3),
 		xdone		=> xdone,
 		ydone		=> ydone,
+		ldone		=> ldone,
+		sw			=> SW,
+		draw		=> KEY(0),
 		initx		=> initx,
 		inity		=> inity,
 		loady		=> loady,
-		plot		=> plot
+		plot		=> plot,
+		initl		=> initl,
+		drawl		=> drawl,
+		colour		=> colour,
+		x			=> xmid,
+		y			=> ymid
 	);
 
 end rtl;

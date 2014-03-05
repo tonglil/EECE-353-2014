@@ -14,7 +14,7 @@ ENTITY datapath IS
 		y : OUT STD_LOGIC_VECTOR(6 downto 0);
 		xin : IN STD_LOGIC_VECTOR(7 downto 0); -- x1
 		yin : IN STD_LOGIC_VECTOR(6 downto 0);
-		xdone, ydone, donel : OUT STD_LOGIC
+		xdone, ydone, ldone : OUT STD_LOGIC
 	);
 END datapath;
 
@@ -25,17 +25,17 @@ BEGIN
 		VARIABLE x_tmp : unsigned(7 downto 0) := "00000000";
 		VARIABLE y_tmp : unsigned(6 downto 0) := "0000000";
 		
-		VARIABLE dx : signed(7 downto 0);
-		VARIABLE dy : signed(6 downto 0);
+		VARIABLE dx : unsigned(7 downto 0);
+		VARIABLE dy : unsigned(6 downto 0);
 		
-		VARIABLE err : signed(7 downto 0);
-		VARIABLE e2 : signed(7 downto 0);
+		VARIABLE err : unsigned(7 downto 0);
+		VARIABLE e2 : unsigned(7 downto 0);
 		
-		VARIABLE x0 : signed(7 downto 0) := "01010000";	-- 80
-		VARIABLE y0 : signed(6 downto 0) := "0111100";	-- 60
+		VARIABLE x0 : unsigned(7 downto 0);	-- 80
+		VARIABLE y0 : unsigned(6 downto 0);	-- 60
 		
-		VARIABLE x1 : signed(7 downto 0) := signed(xin);
-		VARIABLE y1 : signed(6 downto 0) := signed(yin);
+		VARIABLE x1 : unsigned(7 downto 0);
+		VARIABLE y1 : unsigned(6 downto 0);
 		
 		VARIABLE sx : signed(1 downto 0);
 		VARIABLE sy : signed(1 downto 0);
@@ -45,8 +45,12 @@ BEGIN
 			x_tmp := "00000000"; -- ARE THESE NECESSARY?
 		ELSIF rising_edge(clk) THEN
 			IF (initl = '1') THEN
-				dx := abs(x0 - x1);
-				dy := abs(y0 - y1);
+				x0 := "01010000";	-- 80
+				y0 := "0111100";	-- 60
+				x1 := unsigned(xin);
+				y1 := unsigned(yin);
+				dx := unsigned(abs(signed(x0) - signed(x1)));
+				dy := unsigned(abs(signed(y0) - signed(y1)));
 				IF (x0 < x1) THEN
 					sx := "01";
 				ELSE
@@ -58,20 +62,21 @@ BEGIN
 					sy := "11";
 				END IF;
 				err := dx - dy;
+				ldone <= '0';
 			ELSIF (drawl = '1') THEN
 				x <= STD_LOGIC_VECTOR(x0);
 				y <= STD_LOGIC_VECTOR(y0);
-				IF ((x1 = 80) and (y1 = 60)) THEN
-					donel <= '0';
+				IF ((x1 = x0) and (y1 = y0)) THEN
+					ldone <= '1';
 				ELSE
 					e2 := err + err;
-					IF (e2 > -dy) THEN
+					IF (signed(e2) > -signed(dy)) THEN
 						err := err - dy;
-						x0 := x0 + sx;
+						x0 := unsigned(signed(x0) + sx);
 					END IF;
 					IF (e2 < dx) THEN
 						err := err + dx;
-						y0 := y0 + sy;
+						y0 := unsigned(signed(y0) + sy);
 					END IF;
 				END IF;
 			ELSE
