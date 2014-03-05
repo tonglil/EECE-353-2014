@@ -9,7 +9,7 @@ ENTITY datapath IS
 	PORT (
 		clk : IN STD_LOGIC;
 		resetb : IN STD_LOGIC;
-		initx, inity : IN STD_LOGIC;
+		initx, inity, loady : IN STD_LOGIC;
 		x : OUT STD_LOGIC_VECTOR(7 downto 0);
 		y : OUT STD_LOGIC_VECTOR(6 downto 0);
 		xdone, ydone : OUT STD_LOGIC

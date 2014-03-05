@@ -28,21 +28,22 @@ BEGIN
 		ELSIF rising_edge(clk) THEN
 			CASE state IS
 				WHEN sr => 
-					next_state := sx;
-				WHEN sy => 
-					next_state := sx;
-				WHEN sx => 
+					next_state := sbx;
+				WHEN sby => 
+					next_state := sbx;
+				WHEN sbx => 
 					IF (XDONE = '0') THEN
-						next_state := sx;
+						next_state := sbx;
 					ELSIF (XDONE = '1' AND YDONE = '0') THEN
-						next_state := sy;
+						next_state := sby;
 					ELSE 
-						next_state := sdone;
+						next_state := sbdone;
 					END IF;
 				WHEN others => 
-					next_state := sdone;
+					next_state := sbdone;
 			END CASE;
 			state <= next_state;
+		END IF;
 	END PROCESS;
 	
 	PROCESS(state)
@@ -53,12 +54,12 @@ BEGIN
 				INITY <= '1';
 				LOADY <= '1';
 				PLOT <= '0';
-			WHEN sy => 
+			WHEN sby => 
 				INITX <= '1';
 				INITY <= '0';
 				LOADY <= '1';
 				PLOT <= '0';
-			WHEN sx => 
+			WHEN sbx => 
 				INITX <= '0';
 				INITY <= '0';
 				LOADY <= '0';

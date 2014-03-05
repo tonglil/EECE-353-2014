@@ -43,7 +43,7 @@ architecture rtl of lab4 is
 		PORT (
 			clk : IN STD_LOGIC;
 			resetb : IN STD_LOGIC;
-			initx, inity : IN STD_LOGIC;
+			initx, inity, loady : IN STD_LOGIC;
 			x : OUT STD_LOGIC_VECTOR(7 downto 0);
 			y : OUT STD_LOGIC_VECTOR(6 downto 0);
 			xdone, ydone : OUT STD_LOGIC
@@ -82,9 +82,26 @@ begin
              VGA_CLK   => VGA_CLK);
 
 	dp : datapath PORT MAP(
+		resetb	=> KEY(3),
+		clk		=> CLOCK_50,
+		initx		=> initx,
+		inity		=> inity,
+		x			=> x,
+		y			=> y,
+		xdone		=> xdone,
+		ydone		=> ydone,
+		loady		=> loady
 	);
 	
 	sm : statemachine PORT MAP(
+		clk		=> CLOCK_50,
+		resetb	=> KEY(3),
+		xdone		=> xdone,
+		ydone		=> ydone,
+		initx		=> initx,
+		inity		=> inity,
+		loady		=> loady,
+		plot		=> plot
 	);
 	
 
