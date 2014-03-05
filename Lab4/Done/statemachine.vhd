@@ -71,6 +71,8 @@ BEGIN
 					ELSE
 						next_state := sldraw;
 					END IF;
+				WHEN sldone =>
+					next_state := sbdone;
 				WHEN others =>
 					next_state := sldone;
 			END CASE;

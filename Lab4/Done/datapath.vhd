@@ -27,18 +27,14 @@ BEGIN
 		
 		VARIABLE dx : signed(7 downto 0);
 		VARIABLE dy : signed(6 downto 0);
-		
-		VARIABLE err : signed(7 downto 0);
-		VARIABLE e2 : signed(7 downto 0);
-		
 		VARIABLE x0 : signed(7 downto 0);	-- 80
 		VARIABLE y0 : signed(6 downto 0);	-- 60
-		
 		VARIABLE x1 : signed(7 downto 0);
-		VARIABLE y1 : signed(6 downto 0);
-		
+		VARIABLE y1 : signed(6 downto 0);		
 		VARIABLE sx : signed(1 downto 0);
 		VARIABLE sy : signed(1 downto 0);
+		VARIABLE err : signed(7 downto 0);
+		VARIABLE e2 : signed(7 downto 0);
 	BEGIN
 		IF (resetb = '0') THEN
 			y_tmp := "0000000";
@@ -47,10 +43,10 @@ BEGIN
 			IF (initl = '1') THEN
 				x0 := "01010000";	-- 80
 				y0 := "0111100";	-- 60
-				x1 := signed(xin);
+				x1 := signed(xin);	-- destination
 				y1 := signed(yin);
-				dx := abs(x0 - x1);
-				dy := abs(y0 - y1);
+				dx := abs(x1 - x0);
+				dy := abs(y1 - y0);
 				IF (x0 < x1) THEN
 					sx := to_signed(1, 2);
 				ELSE
@@ -66,7 +62,7 @@ BEGIN
 			ELSIF (drawl = '1') THEN
 				x <= STD_LOGIC_VECTOR(x0);
 				y <= STD_LOGIC_VECTOR(y0);
-				IF ((x1 = x0) and (y1 = y0)) THEN
+				IF ((x0 = x1) and (y0 = y1)) THEN
 					ldone <= '1';
 				ELSE
 					e2 := err + err;

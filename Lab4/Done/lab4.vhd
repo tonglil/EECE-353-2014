@@ -100,25 +100,8 @@ begin
              VGA_CLK   => VGA_CLK
 		);
 
-	dp : datapath PORT MAP(
-		clk		=> slow(16),
-		resetb	=> KEY(3),
-		initx		=> initx,
-		inity		=> inity,
-		initl		=> initl,
-		drawl		=> drawl,
-		x			=> x,
-		y			=> y,
-		xin		=> xmid,
-		yin		=> ymid,
-		xdone		=> xdone,
-		ydone		=> ydone,
-		ldone		=> ldone,
-		loady		=> loady
-	);	
-	
 	sm : statemachine PORT MAP(
-		clk		=> slow(16),
+		clk		=> slow(15),
 		resetb	=> KEY(3),
 		xdone		=> xdone,
 		ydone		=> ydone,
@@ -136,5 +119,21 @@ begin
 		y			=> ymid,
 		ledg		=> LEDG
 	);
-
+		
+	dp : datapath PORT MAP(
+		clk		=> slow(15),
+		resetb	=> KEY(3),
+		initx		=> initx,
+		inity		=> inity,
+		initl		=> initl,
+		drawl		=> drawl,
+		x			=> x,
+		y			=> y,
+		xin		=> xmid,
+		yin		=> ymid,
+		xdone		=> xdone,
+		ydone		=> ydone,
+		ldone		=> ldone,
+		loady		=> loady
+	);
 end rtl;
