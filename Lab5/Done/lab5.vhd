@@ -57,14 +57,17 @@ begin
 
 
     process(CLOCK_50, KEY(3))
-        type state_types is (sr, sb, sginit, sg1g, sg1f, sg2g, sg2f, sgpuck, sgpause, sgdone);
+        type state_types is (sr, sb, sginit, sg1g, sg1f, sg2g, sg2f, sgp1, sgp2, sgpause, sgdone);
         variable state : state_types := sr;
-        variable clk : unsigned(20 downto 0) := "000000000000000000000";
+        variable clk : unsigned(21 downto 0) := "0000000000000000000000";
+        variable max_clk : unsigned(21 downto 0) := "1111111111111111111111";
         variable x_tmp : unsigned(7 downto 0) := "00000000";
         variable y_tmp : unsigned(6 downto 0) := "0000000";
         variable t1g, t1f, t2g, t2f : unsigned(6 downto 0);
-        variable puckx : unsigned(7 downto 0);
-        variable pucky : unsigned(6 downto 0);
+        variable puckx : unsigned(7 downto 0) := "01010000";
+        variable pucky : unsigned(6 downto 0) := "0111100";
+        variable velx : std_logic := '0';
+        variable vely : std_logic := '0';
     begin
         if (KEY(3) = '0') then
             state := sr;
@@ -75,7 +78,11 @@ begin
                     plot <= '0';
                     x_tmp := "00000000";
                     y_tmp := "0000000";
-                    LEDG <= "00000001";
+                    puckx := "01010000";
+                    pucky := "0111100";
+                    velx := sw(17) xor sw(0);
+                    vely := sw(16) xor sw(1);
+                    max_clk := (others => '1');
                     state := sb;
                 when sb =>
                     plot <= '1';
@@ -116,7 +123,7 @@ begin
                     x_tmp := "00000101";
                     y_tmp := y_tmp + 1;
                     if (y_tmp >= t1g and y_tmp <= t1g + 12 and y_tmp < 115) then
-                        colour <= "111";
+                        colour <= "001";
                     elsif (y_tmp >= 115) then
                         if (sw(17) = '1') then
                             if (t1g > 6) then
@@ -140,7 +147,7 @@ begin
                     x_tmp := "01001000";
                     y_tmp := y_tmp + 1;
                     if (y_tmp >= t1f and y_tmp <= t1f + 12 and y_tmp < 115) then
-                        colour <= "111";
+                        colour <= "001";
                     elsif (y_tmp >= 115) then
                         if (sw(16) = '1') then
                             if (t1f > 6) then
@@ -164,7 +171,7 @@ begin
                     x_tmp := "10011010";
                     y_tmp := y_tmp + 1;
                     if (y_tmp >= t2g and y_tmp <= t2g + 12 and y_tmp < 115) then
-                        colour <= "111";
+                        colour <= "100";
                     elsif (y_tmp >= 115) then
                         if (sw(0) = '1') then
                             if (t2g > 6) then
@@ -188,7 +195,7 @@ begin
                     x_tmp := "01011000";
                     y_tmp := y_tmp + 1;
                     if (y_tmp >= t2f and y_tmp <= t2f + 12 and y_tmp < 115) then
-                        colour <= "111";
+                        colour <= "100";
                     elsif (y_tmp >= 115) then
                         if (sw(1) = '1') then
                             if (t2f > 6) then
@@ -200,19 +207,92 @@ begin
                             end if;
                         end if;
                         colour <= "111";
-                        state := sgpuck;
+                        state := sgp1;
                     else
                         colour <= "000";
                     end if;
                     y <= std_logic_vector(y_tmp);
                     x <= std_logic_vector(x_tmp);
-                when sgpuck =>
-                    state := sgpause;
+                when sgp1 =>
+                    plot <= '1';
+                    colour <= "000";
+                    y <= std_logic_vector(pucky);
+                    x <= std_logic_vector(puckx);
+                    state := sgp2;
+                when sgp2 =>
+                    --collision detection with walls
+                    if (puckx <= 4) then
+                        state := sr;
+                    elsif (puckx >= 156) then
+                        state := sr;
+                    else
+                        if (pucky <= 6) then
+                            vely := '1';
+                        elsif (pucky >= 114) then
+                            vely := '0';
+                        end if;
+                        
+                        if (velx = '0') then
+                            puckx := puckx - 1;
+                        else
+                            puckx := puckx + 1;
+                        end if;
+                        if (vely = '0') then
+                            pucky := pucky - 1;
+                        else
+                            pucky := pucky + 1;
+                        end if;
+                        
+                        --collision detection with paddles
+                        if (puckx = "00000101" and pucky >= t1g and pucky <= t1g+12) then
+                            velx := not velx;
+                            if (velx = '0') then
+                                puckx := puckx - 2;
+                            else
+                                puckx := puckx + 2;
+                            end if;
+                        elsif (puckx = "01001000" and pucky >= t1f and pucky <= t1f+12) then
+                            velx := not velx;
+                            if (velx = '0') then
+                                puckx := puckx - 2;
+                            else
+                                puckx := puckx + 2;
+                            end if;
+                        elsif (puckx = "10011010" and pucky >= t2g and pucky <= t2g+12) then
+                            velx := not velx;
+                            if (velx = '0') then
+                                puckx := puckx - 2;
+                            else
+                                puckx := puckx + 2;
+                            end if;
+                        elsif (puckx = "01011000" and pucky >= t2f and pucky <= t2f+12) then
+                            velx := not velx;
+                            if (velx = '0') then
+                                puckx := puckx - 2;
+                            else
+                                puckx := puckx + 2;
+                            end if;
+                        end if;
+                        
+                        plot <= '1';
+                        colour <= "111";
+                        y <= std_logic_vector(pucky);
+                        x <= std_logic_vector(puckx);
+                        state := sgpause;
+                    end if;
                 when sgpause =>
                     plot <= '0';
                     clk := clk + 1;
-                    if (clk = "111111111111111111111") then
-                        clk := "000000000000000000000";
+                    if (clk = max_clk) then
+                        clk := "0000000000000000000000";
+                        if (max_clk >= 4000000) then
+                            max_clk := max_clk - 100000;
+                        elsif (max_clk >= 2000000) then
+                            max_clk := max_clk - 10000;
+                        elsif (max_clk >= 900000) then
+                            max_clk := max_clk - 1000;
+                        end if;
+                        ledg <= std_logic_vector(max_clk(21 downto 14));
                         y_tmp := "0000101";
                         colour <= "111";
                         state := sg1g;
