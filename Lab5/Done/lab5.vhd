@@ -147,7 +147,7 @@ begin
                     x <= std_logic_vector(x_tmp);
                 when sg1f =>
                     plot <= '1';
-                    x_tmp := "01001000";
+                    x_tmp := "01000011";
                     y_tmp := y_tmp + 1;
                     if (y_tmp >= t1f and y_tmp <= t1f + 12 and y_tmp < 115) then
                         colour <= "001";
@@ -195,7 +195,7 @@ begin
                     x <= std_logic_vector(x_tmp);
                 when sg2f =>
                     plot <= '1';
-                    x_tmp := "01011000";
+                    x_tmp := "01011101";
                     y_tmp := y_tmp + 1;
                     if (y_tmp >= t2f and y_tmp <= t2f + 12 and y_tmp < 115) then
                         colour <= "100";
@@ -254,7 +254,7 @@ begin
                             else
                                 puckx := puckx + 2;
                             end if;
-                        elsif (puckx = "01001000" and pucky >= t1f and pucky <= t1f+12) then
+                        elsif (puckx = "01000011" and pucky >= t1f and pucky <= t1f+12) then
                             velx := not velx;
                             if (velx = '0') then
                                 puckx := puckx - 2;
@@ -268,7 +268,7 @@ begin
                             else
                                 puckx := puckx + 2;
                             end if;
-                        elsif (puckx = "01011000" and pucky >= t2f and pucky <= t2f+12) then
+                        elsif (puckx = "01011101" and pucky >= t2f and pucky <= t2f+12) then
                             velx := not velx;
                             if (velx = '0') then
                                 puckx := puckx - 2;
@@ -294,6 +294,8 @@ begin
                             max_clk := max_clk - 10000;
                         elsif (max_clk >= 900000) then
                             max_clk := max_clk - 1000;
+                        elsif (max_clk >= 700000) then
+                            max_clk := max_clk - 100;
                         end if;
                         ledg <= std_logic_vector(max_clk(21 downto 14));
                         y_tmp := "0000101";
